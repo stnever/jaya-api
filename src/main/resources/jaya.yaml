@@ -1,6 +1,7 @@
 database:
   # the name of your JDBC driver
-  driverClass: org.apache.derby.jdbc.ClientDriver
+  #driverClass: org.apache.derby.jdbc.ClientDriver
+  driverClass: com.mysql.jdbc.Driver
 
   # the username
   user: app
@@ -9,7 +10,8 @@ database:
   password: app
 
   # the JDBC URL
-  url: jdbc:derby://localhost:1527/jaya;create=true
+  # url: jdbc:derby://localhost:1527/jaya;create=true
+  url: jdbc:mysql://localhost:3306/kratoa-db
 
   # any properties specific to your JDBC driver:
   properties:

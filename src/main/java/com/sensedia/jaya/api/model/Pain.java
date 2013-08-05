@@ -1,5 +1,6 @@
 package com.sensedia.jaya.api.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pain {
@@ -7,7 +8,10 @@ public class Pain {
 	private String id;
 	private String title;
 	private String description;
-	private List<Weight> weights;
+
+	private List<Opinion> opinions = new ArrayList<Opinion>();
+
+	private List<Comment> comments = new ArrayList<Comment>();
 
 	public String getId() {
 		return id;
@@ -36,12 +40,21 @@ public class Pain {
 		return this;
 	}
 
-	public List<Weight> getWeights() {
-		return weights;
+	public List<Opinion> getOpinions() {
+		return opinions;
 	}
 
-	public Pain setWeights(List<Weight> weights) {
-		this.weights = weights;
+	public Pain setOpinions(List<Opinion> opinions) {
+		this.opinions = opinions;
+		return this;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public Pain setComments(List<Comment> comments) {
+		this.comments = comments;
 		return this;
 	}
 
