@@ -3,7 +3,7 @@ package com.sensedia.jaya.api.model;
 public class Opinion {
 
 	private Long id;
-	private Long userId;
+	private String userId;
 	private Long customerId;
 	private String painId; // string pois é a key do JIRA
 	private Integer value;
@@ -18,11 +18,11 @@ public class Opinion {
 		return this;
 	}
 
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public Opinion setUserId(Long userId) {
+	public Opinion setUserId(String userId) {
 		this.userId = userId;
 		return this;
 	}
@@ -61,6 +61,12 @@ public class Opinion {
 	public Opinion setComment(String comment) {
 		this.comment = comment;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Opinion [id=" + id + ", userId=" + userId + ", customerId=" + customerId + ", painId=" + painId
+				+ ", value=" + value + ", comment=" + comment + "]";
 	}
 
 }

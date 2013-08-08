@@ -1,5 +1,6 @@
 package com.sensedia.jaya.api.resources;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -36,6 +37,8 @@ public class CustomersResource {
 	private CustomerCommentDAO commentDAO;
 	private OpinionDAO opinionDAO;
 
+	private static Logger _logger = LoggerFactory.getLogger(CustomersResource.class.getName());
+
 	public CustomersResource(CustomerDAO customerDAO, CustomerCommentDAO commentDAO, OpinionDAO opinionDAO) {
 		super();
 		this.customerDAO = customerDAO;
@@ -43,18 +46,19 @@ public class CustomersResource {
 		this.opinionDAO = opinionDAO;
 	}
 
-	private static Logger _logger = LoggerFactory.getLogger(CustomersResource.class.getName());
-
 	@GET
 	public List<Customer> findAll(@RequestUser User u) {
+		_logger.info("Retrieving all customers.");
 		return customerDAO.findAll();
 	}
 
 	@POST
 	@Consumes("application/json")
 	public Response create(@RequestUser User u, Customer customer) {
+		_logger.info("Creating customer {}", customer);
 		customer.setId(null);
 		Long id = customerDAO.insert(customer);
+		_logger.info("Customer ID: {}", id);
 		return Response.status(Response.Status.CREATED).header("Location", id).build();
 	}
 
@@ -63,7 +67,7 @@ public class CustomersResource {
 	@ApiOperation(value = "Find customer by ID", notes = "Add extra notes here", responseClass = "com.sensedia.jaya.api.model.Customer")
 	public Customer findById(@RequestUser User u,
 			@ApiParam(value = "ID of Pain to fetch", required = true) @PathParam("id") Long id) {
-		_logger.info("Retrieving Pain #{}", id);
+		_logger.info("Retrieving customer {}", id);
 
 		Customer c = customerDAO.findById(id);
 		if (c == null)
@@ -80,10 +84,38 @@ public class CustomersResource {
 		return c;
 	}
 
+	@POST
+	@Path("/{id}/comments")
+	public Response addComment(@RequestUser User u, @PathParam("id") String customerId, String comment) {
+		_logger.info("Adding comment to customer {} by user {}: {}", customerId, u, comment);
+		Comment c = new Comment().setDate(new Date()).setText(comment).setUserId(u.getUserId());
+		commentDAO.insertComment(customerId, c);
+		return Response.status(Response.Status.OK).build();
+	}
+
+	@PUT
+	@Path("/{customerId}/opinions/{painId}")
+	public Response addComment(@RequestUser User u, @PathParam("painId") String painId,
+			@PathParam("customerId") Long customerId, Integer value, String comment) {
+		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
+
+		Opinion o = opinionDAO.findByKey(painId, customerId, u.getUserId());
+		if (o == null) {
+			o = new Opinion().setComment(comment).setValue(value).setPainId(painId).setCustomerId(customerId)
+					.setUserId(u.getUserId());
+			opinionDAO.insert(o);
+		} else {
+			o.setValue(value).setComment(comment);
+			opinionDAO.update(o);
+		}
+		return Response.status(Response.Status.OK).build();
+	}
+
 	@PUT
 	@Path("/{id}")
 	@Consumes("application/json")
 	public Response update(@RequestUser User u, Customer customer) {
+		_logger.info("Updating customer {}", customer);
 		customerDAO.update(customer);
 		return Response.status(Response.Status.ACCEPTED).build();
 	}

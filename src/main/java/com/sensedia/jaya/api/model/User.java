@@ -2,7 +2,7 @@ package com.sensedia.jaya.api.model;
 
 public class User {
 
-	private Long userId;
+	private String userId;
 
 	private String name;
 
@@ -10,11 +10,11 @@ public class User {
 
 	private String sessionId;
 
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public User setUserId(Long userId) {
+	public User setUserId(String userId) {
 		this.userId = userId;
 		return this;
 	}
@@ -44,6 +44,11 @@ public class User {
 	public User setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", name=" + name + ", email=" + email + ", sessionId=" + sessionId + "]";
 	}
 
 }

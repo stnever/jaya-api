@@ -5,16 +5,16 @@ import java.util.Date;
 public class Comment {
 
 	private Long id;
-	private Long userId;
+	private String userId;
 	private String userName;
 	private String text;
 	private Date date;
 
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public Comment setUserId(Long userId) {
+	public Comment setUserId(String userId) {
 		this.userId = userId;
 		return this;
 	}
@@ -53,6 +53,12 @@ public class Comment {
 	public Comment setId(Long id) {
 		this.id = id;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Comment [id=" + id + ", userId=" + userId + ", userName=" + userName + ", text=" + text + ", date="
+				+ date + "]";
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.sensedia.jaya.jaya_api;
+package com.sensedia.jaya.api.dao;
 
 import java.sql.DriverManager;
 

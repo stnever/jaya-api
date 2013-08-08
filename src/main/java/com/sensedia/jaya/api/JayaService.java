@@ -15,6 +15,7 @@ import com.sensedia.jaya.api.resources.CustomersResource;
 import com.sensedia.jaya.api.resources.MyApiListingResourceJSON;
 import com.sensedia.jaya.api.resources.OpinionsResource;
 import com.sensedia.jaya.api.resources.PainsResource;
+import com.thetransactioncompany.cors.CORSFilter;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.client.HttpClientBuilder;
@@ -26,7 +27,8 @@ public class JayaService extends Service<JayaConfiguration> {
 
 	public static void main(String[] args) throws Exception {
 		JaxrsApiReader.setFormatString("");
-		new JayaService().run(args);
+		// new JayaService().run(args);
+		new JayaService().run(new String[] { "server", "./testing.yaml" });
 	}
 
 	@Override
@@ -48,12 +50,17 @@ public class JayaService extends Service<JayaConfiguration> {
 		env.addProvider(new RequestUserProvider(requestUserInjectable));
 
 		HttpClient httpClient = new HttpClientBuilder().using(config.getHttpClientConfiguration()).build();
-		
-		env.addResource(new AccessResource(userDao, httpClient));
+
+		env.addResource(new AccessResource(userDao, httpClient, config.getGoogleConfiguration()));
 		env.addResource(new PainsResource(config.getJiraConfiguration(), painCommentDao, opinionDao, httpClient));
 		env.addResource(new CustomersResource(customerDao, customerCommentDao, opinionDao));
 		env.addResource(new OpinionsResource(opinionDao));
 		env.addResource(new MyApiListingResourceJSON());
+
+		env.addFilter(CORSFilter.class, config.getHttpConfiguration().getRootPath())
+				.setInitParam("allowedOrigins", "*")
+				.setInitParam("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+
 	}
 
 }

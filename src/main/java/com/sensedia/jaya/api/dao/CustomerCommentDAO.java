@@ -35,7 +35,7 @@ public interface CustomerCommentDAO {
 	public static class CommentMapper implements ResultSetMapper<Comment> {
 		public Comment map(int index, ResultSet r, StatementContext ctx) throws SQLException {
 			return new Comment().setId(r.getLong("id")).setDate(new Date(r.getDate("dt_created").getTime()))
-					.setText(r.getString("txt_contents")).setUserId(r.getLong("user_id"));
+					.setText(r.getString("txt_contents")).setUserId(r.getString("user_id"));
 		}
 	}
 }

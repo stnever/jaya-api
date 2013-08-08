@@ -4,10 +4,10 @@ database:
   driverClass: com.mysql.jdbc.Driver
 
   # the username
-  user: app
+  user: root
 
   # the password
-  password: app
+  password: 
 
   # the JDBC URL
   # url: jdbc:derby://localhost:1527/jaya;create=true
@@ -49,3 +49,7 @@ logging:
 
     # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
     "com.wordnik": DEBUG
+
+googleApp:
+
+	#clientId: "..."

@@ -13,28 +13,37 @@ public class JayaConfiguration extends Configuration {
 	@Valid
 	@NotNull
 	@JsonProperty
-	private DatabaseConfiguration databaseConfiguration = new DatabaseConfiguration();
+	private DatabaseConfiguration database = new DatabaseConfiguration();
 
 	@Valid
 	@NotNull
 	@JsonProperty
-	private JiraConfiguration jiraConfiguration = new JiraConfiguration();
+	private JiraConfiguration jira = new JiraConfiguration();
 
 	@Valid
 	@NotNull
 	@JsonProperty
-	private HttpClientConfiguration httpClientConfiguration = new HttpClientConfiguration();
+	private HttpClientConfiguration httpClient = new HttpClientConfiguration();
+
+	@Valid
+	@NotNull
+	@JsonProperty
+	private GoogleConfiguration googleApp = new GoogleConfiguration();
 
 	public DatabaseConfiguration getDatabaseConfiguration() {
-		return databaseConfiguration;
+		return database;
 	}
 
 	public JiraConfiguration getJiraConfiguration() {
-		return jiraConfiguration;
+		return jira;
 	}
 
 	public HttpClientConfiguration getHttpClientConfiguration() {
-		return httpClientConfiguration;
+		return httpClient;
+	}
+	
+	public GoogleConfiguration getGoogleConfiguration() {
+		return googleApp;
 	}
 
 	public static class JiraConfiguration {
@@ -49,6 +58,11 @@ public class JayaConfiguration extends Configuration {
 		@JsonProperty
 		private String jiraPassword;
 
+		@Valid
+		@NotNull
+		@JsonProperty
+		private String jiraUrl;
+
 		public String getJiraUser() {
 			return jiraUser;
 		}
@@ -57,5 +71,24 @@ public class JayaConfiguration extends Configuration {
 			return jiraPassword;
 		}
 
+		public String getJiraUrl() {
+			return jiraUrl;
+		}
+
+		public String getJiraApiRoot() {
+			return jiraUrl + "/rest/api/2";
+		}
+
+	}
+
+	public static class GoogleConfiguration {
+		@Valid
+		@NotNull
+		@JsonProperty
+		private String clientId;
+
+		public String getClientId() {
+			return clientId;
+		}
 	}
 }

@@ -58,4 +58,10 @@ public class Pain {
 		return this;
 	}
 
+	@Override
+	public String toString() {
+		return "Pain [id=" + id + ", title=" + title + ", description=" + description + ", opinions=" + opinions
+				+ ", comments=" + comments + "]";
+	}
+
 }
