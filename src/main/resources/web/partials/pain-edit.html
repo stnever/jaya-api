@@ -1,0 +1,20 @@
+<style>
+	div.list-group > a.list-group-item { cursor: pointer; }
+</style>
+
+<h3>Pain</h3>
+
+<form>
+  <fieldset>
+    <div class="form-group">
+      <label for="pain.title">Title</label>
+      <input type="text" class="form-control" ng-model="pain.title">
+    </div>
+    <div class="form-group">
+      <label for="pain.description">Description</label>
+      <textarea class="form-control" ng-model="pain.description"></textarea>
+    </div>
+	<button type="button" class="btn btn-success">Save</button>
+	<button type="button" class="btn btn-default">Cancel</button>
+  </fieldset>
+</form>

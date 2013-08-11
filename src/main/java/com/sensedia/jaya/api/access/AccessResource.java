@@ -55,9 +55,9 @@ public class AccessResource {
 			String userId = tokeninfo.has("user_id") ? tokeninfo.get("user_id").textValue() : null;
 			
 			// Obtem o client_id e valida que é igual ao nosso
-			String clientId = tokeninfo.get("client_id").textValue();
+			String clientId = tokeninfo.get("audience").textValue();
 			if ( ! clientId.equals(googleConfig.getClientId())) {
-				throw new RuntimeException( "Token clientId (" + clientId + ") does not match configured clientId (" + googleConfig.getClientId() + ")");
+				throw new RuntimeException( "Token audience (" + clientId + ") does not match configured clientId (" + googleConfig.getClientId() + ")");
 			}
 
 			// Obtem o nome a partir do /me

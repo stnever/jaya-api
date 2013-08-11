@@ -2,6 +2,7 @@ package com.sensedia.jaya.api.resources;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.params.HttpParams;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +64,15 @@ public class PainsResource {
 	@GET
 	public List<Pain> findAll(@RequestUser User u) {
 		_logger.info("Retrieving all pains");
-		JsonNode json = get("/search", "maxResults", "100", "fields", "summary", "jql", "project=PG");
+		JsonNode json = get("/search", "maxResults", "100", "fields", "summary,description", "jql", "project=PG");
 		List<Pain> result = new ArrayList<Pain>();
 
-		for (JsonNode jsonIssue : json.findValues("issues")) {
-			Pain pain = new Pain().setDescription(jsonIssue.get("description").textValue())
-					.setId(jsonIssue.get("key").textValue()).setTitle(jsonIssue.get("summary").textValue());
+		for (Iterator<JsonNode> it = json.findValue("issues").elements(); it.hasNext();) {
+			JsonNode jsonIssue = it.next();
+			Pain pain = new Pain().setId(jsonIssue.get("key").textValue());
+
+			pain.setTitle(jsonIssue.get("fields").get("summary").textValue());
+			pain.setDescription(jsonIssue.get("fields").get("description").textValue());
 			result.add(pain);
 		}
 
@@ -83,8 +87,10 @@ public class PainsResource {
 		_logger.info("Retrieving Pain {}", id);
 
 		JsonNode jsonIssue = get("/issue/" + id);
-		Pain pain = new Pain().setDescription(jsonIssue.get("description").textValue())
-				.setId(jsonIssue.get("key").textValue()).setTitle(jsonIssue.get("summary").textValue());
+		Pain pain = new Pain().setId(jsonIssue.get("key").textValue());
+		
+		pain.setTitle(jsonIssue.get("fields").get("summary").textValue());
+		pain.setDescription(jsonIssue.get("fields").get("description").textValue());
 
 		List<Comment> comments = commentDAO.findByPain(pain.getId());
 		if (comments != null)
@@ -122,7 +128,7 @@ public class PainsResource {
 
 	@PUT
 	@Path("/{painId}/opinions/{customerId}")
-	public Response addComment(@RequestUser User u, @PathParam("painId") String painId,
+	public Response addOpinion(@RequestUser User u, @PathParam("painId") String painId,
 			@PathParam("customerId") Long customerId, Integer value, String comment) {
 		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
 
@@ -139,18 +145,19 @@ public class PainsResource {
 	}
 
 	private JsonNode get(String resource, String... params) {
-		HttpGet get = new HttpGet(jiraConfiguration.getJiraApiRoot() + resource);
-		HttpParams httpParams = get.getParams();
-		for (int i = 0; i < params.length; i += 2) {
-			httpParams.setParameter(params[i], params[i + 1]);
-		}
-
-		// set up authorization header
-		String base64 = Base64
-				.encodeLines((jiraConfiguration.getJiraUser() + ":" + jiraConfiguration.getJiraPassword()).getBytes());
-		httpParams.setParameter("Authorization", "Basic " + base64);
-
 		try {
+			URIBuilder builder = new URIBuilder(jiraConfiguration.getJiraApiRoot() + resource);
+			for (int i = 0; i < params.length; i += 2) {
+				builder.setParameter(params[i], params[i + 1]);
+			}
+
+			HttpGet get = new HttpGet(builder.build());
+
+			// set up authorization header
+			String base64 = Base64.encodeLines((jiraConfiguration.getJiraUser() + ":" + jiraConfiguration
+					.getJiraPassword()).getBytes());
+			get.setHeader("Authorization", "Basic " + base64);
+
 			HttpResponse resp = httpClient.execute(get);
 			String json = Input.stream(resp.getEntity().getContent()).readString();
 			return new ObjectMapper().readTree(json);

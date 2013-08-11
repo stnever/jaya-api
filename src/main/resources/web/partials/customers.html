@@ -1,0 +1,16 @@
+<ul class="breadcrumb">
+  <li><a href="#/home">Home</a></li>
+  <li class="active">Customers</li>
+</ul>
+
+<h3>Customers
+	<a href="#/customers/new/edit" class="pull-right btn btn-mini btn-primary">New</a>
+</h3>
+
+<div class="list-group">
+	<a class="list-group-item" href="#/customers/{{customer.id}}" ng-repeat="customer in customers">
+		<h4 class="list-group-item-header">{{customer.name}} <i class="icon-chevron-right pull-right"></i></h4>
+		<p class="list-group-item-text">{{customer.description}}</p>
+	</a>
+</div>
+

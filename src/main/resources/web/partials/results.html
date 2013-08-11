@@ -1,0 +1,46 @@
+<h1>Results</h1>
+
+Show pains:
+<div class="btn-group" data-toggle="buttons-radio">
+	<button type="button" class="btn btn-small" ng-repeat="pain in pains">{{pain.title}}</button>
+</div>
+
+Show customers:
+<ul>
+	<li ng-repeat="customer in customers">{{customer.name}}</li>
+</ul>
+
+Include votes from these users:
+<ul>
+	<li ng-repeat="user in users">{{user.userLogin}}</li>
+</ul>
+
+Show
+<div class="btn-group" data-toggle="buttons-radio">
+    <button type="button" class="btn btn-primary">Merged votes for each customer</button>
+    <button type="button" class="btn btn-primary">Individual votes, only for "Whole Product"</button>
+</div>
+
+<table class="table table-condensed">
+	<thead>
+		<tr>
+			<th rowspan="2">Pain</th>
+			<th ng-repeat="customer in customers" colspan="{{users.length}}">{{customer.name}}</th>
+		</tr>
+		<tr>
+			<th ng-repeat="user in allHeaders">{{user}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="pain in pains">
+			<td>{{pain.title}}</td>
+			<td ng-repeat="customer in customers">
+				<table>
+				<tr ng-repeat="user in users"><td>{{user}}</td><td>{{matrix[pain.id].customers[customer.id].users[user].value}}</td></tr>
+				</table>
+				<div>{{matrix[pain.id].customers[customer.id].average}}</div>
+			</td>
+			<td>{{matrix[pain.id].average}}</td>
+		</tr>
+	</tbody>
+</table>

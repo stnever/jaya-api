@@ -18,6 +18,7 @@ import com.sensedia.jaya.api.resources.PainsResource;
 import com.thetransactioncompany.cors.CORSFilter;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import com.yammer.dropwizard.Service;
+import com.yammer.dropwizard.assets.AssetsBundle;
 import com.yammer.dropwizard.client.HttpClientBuilder;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
@@ -34,6 +35,7 @@ public class JayaService extends Service<JayaConfiguration> {
 	@Override
 	public void initialize(Bootstrap<JayaConfiguration> bootstrap) {
 		bootstrap.setName("jaya");
+		bootstrap.addBundle(new AssetsBundle("/web/", "/", "index.html"));
 	}
 
 	@Override

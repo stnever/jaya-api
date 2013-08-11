@@ -18,6 +18,9 @@ import com.sensedia.jaya.api.model.Opinion;
 @RegisterMapper(OpinionDAO.OpinionMapper.class)
 public interface OpinionDAO {
 
+	@SqlUpdate("create table t_opinion( id mediumint not null primary key auto_increment, user_id varchar(32) not null, pain_id varchar(32) not null, customer_id numeric(5) not null, value numeric(3) not null, comment varchar(4000) )")
+	void createTable();
+	
 	@SqlUpdate("insert into t_opinion(id, user_id, pain_id, customer_id, value, comment ) values (:id, :userId, :painId, :customerId, value, comment)")
 	@GetGeneratedKeys
 	Long insert(@BindBean Opinion u);

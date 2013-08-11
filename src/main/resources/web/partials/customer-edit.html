@@ -1,0 +1,26 @@
+<style>
+	div.list-group > a.list-group-item { cursor: pointer; }
+</style>
+
+<ul class="breadcrumb">
+  <li><a href="#/home">Home</a></li>
+  <li><a href="#/customers">Customers</a></li>
+  <li class="active">Edit</li>
+</ul>
+
+<h3>Customer</h3>
+
+<form>
+  <fieldset>
+    <div class="form-group">
+      <label for="customer.name">Title</label>
+      <input type="text" class="form-control" ng-model="customer.name">
+    </div>
+    <div class="form-group">
+      <label for="customer.description">Description</label>
+      <textarea class="form-control" ng-model="customer.description"></textarea>
+    </div>
+	<button type="button" class="btn btn-success" ng-click="save()">Save</button>
+	<a class="btn btn-default" onclick="javascript:history.back()">Cancel</a>
+  </fieldset>
+</form>

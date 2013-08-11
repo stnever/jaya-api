@@ -59,7 +59,7 @@ public class CustomersResource {
 		customer.setId(null);
 		Long id = customerDAO.insert(customer);
 		_logger.info("Customer ID: {}", id);
-		return Response.status(Response.Status.CREATED).header("Location", id).build();
+		return Response.status(Response.Status.CREATED).header("Location", id.toString()).build();
 	}
 
 	@GET
@@ -95,7 +95,7 @@ public class CustomersResource {
 
 	@PUT
 	@Path("/{customerId}/opinions/{painId}")
-	public Response addComment(@RequestUser User u, @PathParam("painId") String painId,
+	public Response addOpinion(@RequestUser User u, @PathParam("painId") String painId,
 			@PathParam("customerId") Long customerId, Integer value, String comment) {
 		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
 

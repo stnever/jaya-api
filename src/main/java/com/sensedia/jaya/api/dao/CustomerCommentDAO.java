@@ -19,6 +19,9 @@ import com.sensedia.jaya.api.model.Comment;
 @RegisterMapper(CustomerCommentDAO.CommentMapper.class)
 public interface CustomerCommentDAO {
 
+	@SqlUpdate("create table t_customer_comment( id mediumint not null primary key auto_increment, user_id varchar(32) not null, customer_id mediumint not null, txt_contents varchar(4000), dt_created timestamp )")
+	void createTable();
+
 	@GetGeneratedKeys
 	@SqlUpdate("insert into t_customer_comment(customer_id, user_id, txt_contents, dt_created) values (:customerId, :c.userId, :c.text, :c.date)")
 	Long insertComment(@Bind("customerId") String customerId, @BindBean("c") Comment u);

@@ -17,12 +17,15 @@ import com.sensedia.jaya.api.model.Customer;
 
 @RegisterMapper(CustomerDAO.CustomerMapper.class)
 public interface CustomerDAO {
+	
+	@SqlUpdate("create table t_customer( id mediumint not null primary key auto_increment, name varchar(256) not null, description varchar(4000) )")
+	void createTable();
 
 	@GetGeneratedKeys
 	@SqlUpdate("insert into t_customer(id, name, description) values (:id, :name, :description)")
 	Long insert(@BindBean Customer u);
 
-	@SqlUpdate("update t_customer set name = :name, description = :email where id = :id")
+	@SqlUpdate("update t_customer set name = :name, description = :description where id = :id")
 	void update(@BindBean Customer u);
 
 	@SqlQuery("select * from t_customer where id = :it")
