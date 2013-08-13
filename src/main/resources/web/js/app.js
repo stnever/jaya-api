@@ -14,7 +14,7 @@ angular.module('catalog-manager',['ngLoading'])
 			.when('/customers/:id/edit', {templateUrl: 'partials/customer-edit.html', controller: EditCustomerController })
 			
 			.when('/results',            {templateUrl: 'partials/results.html', controller: ResultsController })
-			// .when('/unlinked',           {templateUrl: 'partials/unlinked-issues.html', controller: UnlinkedIssuesController })
+			.when('/unlinked',           {templateUrl: 'partials/unlinked-issues.html', controller: UnlinkedIssuesController })
 			
             .otherwise({redirectTo: '/home'});
     }] )
