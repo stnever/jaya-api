@@ -33,6 +33,10 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 	$scope.collapseComments = true;
 	$scope.collapseResults = true;
 	$scope.collapseOpinion = true;
+	
+	$scope.saveOpinion = function(painId, value, comment) {
+		$http.post( "api/customers/" + $scope.customer.id + "/opinions/" + painId, { value: value, comment: comment } );
+	}
 }
 
 function EditCustomerController( $scope, $http, $routeParams, Loading, $location ) {

@@ -2,8 +2,14 @@
 	div.list-group > a.list-group-item { cursor: pointer; }
 </style>
 
+<ul class="breadcrumb">
+  <li><a href="#/home">Home</a></li>
+  <li><a href="#/pains">Pains</a></li>
+  <li class="active">Details</li>
+</ul>
+
 <h3>
-	<a class="pull-right btn btn-mini btn-success" href="#/pains/{{pain.id}}/edit"><i class="icon-fixed-width icon-pencil"></i></a>
+	<a class="pull-right btn btn-mini btn-primary" href="#/pains/{{pain.id}}/edit">Edit</a>
 	{{pain.title}}
 </h3>
 <p>{{pain.description}}</p>

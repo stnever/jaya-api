@@ -4,23 +4,26 @@
 
 <p>Issues que não estão associadas a nenhuma pain. Apenas issues dos tipos Estória e Épico são consideradas.
 
-<div class="dropdown">
-  <a data-toggle="dropdown" href="#">Sort</a>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-    <li><a href ng-click="">Unlinked first</a></li>
-	<li><a href ng-click="">Unlinked last</a></li>
-	<li><a href ng-click="">Key ascending</a></li>
-	<li><a href ng-click="">Key descending</a></li>
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    Sort <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" ng-init="predicate='key';reverse=false">
+    <li><a href ng-click="predicate='linkedToPain';reverse=false">Unlinked first</a></li>
+	<li><a href ng-click="predicate='linkedToPain';reverse=true">Unlinked last</a></li>
+	<li><a href ng-click="predicate='key';reverse=false">Key ascending</a></li>
+	<li><a href ng-click="predicate='key';reverse=true">Key descending</a></li>
   </ul>
 </div>
 
 <table class="table">
+	<thead><tr><th>Key</th><th>Description</th><th>Linked with</th></tr></thead>
 	<tr ng-repeat="issue in issues | orderBy:predicate:reverse" ng-class="{'alert-danger': ! issue.linkedToPain}">
-		<td><a href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.key}}</a></td>
-		<td><a href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.summary}}</a></td>
+		<td><a target="_blank" href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.key}}</a></td>
+		<td><a target="_blank" href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.summary}}</a></td>
 		<td>
 			<ul ng-show="issue.links.length > 0">
-				<li ng-repeat="link in issue.links">{{link.key}}</li>
+				<li ng-repeat="link in issue.links"><a target="_blank" href="http://app.sensedia.com/jira/browse/{{link.key}}">{{link.key}}</a></li>
 			</ul>
 		</td>
 	</tr>
