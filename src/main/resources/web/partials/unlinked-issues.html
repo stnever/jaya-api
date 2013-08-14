@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h1>Unlinked issues <small>({{unlinkedCount}} out of {{totalCount}})</small></h1>
+</div>
+
+<p>Issues que não estão associadas a nenhuma pain. Apenas issues dos tipos Estória e Épico são consideradas.
+
+<div class="dropdown">
+  <a data-toggle="dropdown" href="#">Sort</a>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+    <li><a href ng-click="">Unlinked first</a></li>
+	<li><a href ng-click="">Unlinked last</a></li>
+	<li><a href ng-click="">Key ascending</a></li>
+	<li><a href ng-click="">Key descending</a></li>
+  </ul>
+</div>
+
+<table class="table">
+	<tr ng-repeat="issue in issues | orderBy:predicate:reverse" ng-class="{'alert-danger': ! issue.linkedToPain}">
+		<td><a href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.key}}</a></td>
+		<td><a href="http://app.sensedia.com/jira/browse/{{issue.key}}">{{issue.summary}}</a></td>
+		<td>
+			<ul ng-show="issue.links.length > 0">
+				<li ng-repeat="link in issue.links">{{link.key}}</li>
+			</ul>
+		</td>
+	</tr>
+</table>

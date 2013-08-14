@@ -1,6 +1,8 @@
 package com.sensedia.jaya.api.resources;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensedia.jaya.api.JayaConfiguration.JiraConfiguration;
 import com.sensedia.jaya.api.access.RequestUser;
-import com.sensedia.jaya.api.model.Pain;
 import com.sensedia.jaya.api.model.User;
 import com.sensedia.jaya.api.utils.Base64;
 import com.sensedia.jaya.api.utils.Input;
@@ -34,9 +35,15 @@ public class UnlinkedIssuesResource {
 	private JiraConfiguration jiraConfiguration;
 	private static Logger _logger = LoggerFactory.getLogger(UnlinkedIssuesResource.class.getName());
 
+	public UnlinkedIssuesResource(HttpClient httpClient, JiraConfiguration jiraConfiguration) {
+		super();
+		this.httpClient = httpClient;
+		this.jiraConfiguration = jiraConfiguration;
+	}
+
 	@GET
 	public List<Object> getUnlinkedIssues(@RequestUser User u) {
-		_logger.info("Retrieving all pains");
+		_logger.info("Retrieving all unlinked issues");
 		JsonNode json = get(
 				"/search",
 				"maxResults",
@@ -49,22 +56,29 @@ public class UnlinkedIssuesResource {
 
 		for (Iterator<JsonNode> it = json.findValue("issues").elements(); it.hasNext();) {
 			JsonNode jsonIssue = it.next();
-			
+
 			String key = jsonIssue.get("key").textValue();
 			String summary = jsonIssue.get("fields").get("summary").textValue();
-			
-			List<Object> links = new ArrayList<Object>(); 
-			for (Iterator<JsonNode> jit = json.get("fields").findValue("issuelinks").elements(); jit.hasNext();) {
+
+			List<Map<String,Object>> links = new ArrayList<Map<String,Object>>();
+			for (Iterator<JsonNode> jit = jsonIssue.get("fields").findValue("issuelinks").elements(); jit.hasNext();) {
 				JsonNode jsonLink = jit.next();
-			
+
 				JsonNode inwardIssue = jsonLink.get("inwardIssue");
 				JsonNode outwardIssue = jsonLink.get("outwardIssue");
-				JsonNode otherIssue = ( inwardIssue != null ) ? inwardIssue : outwardIssue;
-				if ( otherIssue != null )
-					links.add( otherIssue );
+				JsonNode otherIssue = (inwardIssue != null) ? inwardIssue : outwardIssue;
+				if (otherIssue != null)
+					links.add(Utils.makeMap("key", otherIssue.get("key").textValue()));
 			}
 			
-			Map<String, Objet> issue = Utils.makeMap("key", key, "summary", summary, "links", links );
+			Collections.sort(links, new Comparator<Map<String,Object>>() {
+				@Override
+				public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+					return ((String)o1.get("key")).compareTo((String)o2.get("key"));
+				}
+			});
+
+			Map<String, Object> issue = Utils.makeMap("key", key, "summary", summary, "links", links);
 			result.add(issue);
 		}
 
