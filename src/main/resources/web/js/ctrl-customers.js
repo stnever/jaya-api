@@ -34,12 +34,6 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 	$scope.collapseResults = true;
 	$scope.collapseOpinion = true;
 	
-	$scope.saveOpinion = function(painId, value, comment) {
-		$http.post( "api/customers/" + $scope.customer.id + "/opinions/" + painId, { value: value, comment: comment } ).then(
-			Loading.hide, Loading.error
-		);
-	}
-	
 	$scope.possibleOpinions = [ 1, 2, 3, 4 ];
 }
 
@@ -48,6 +42,7 @@ function CustomerPainOpinionController( $scope, $http, Loading ) {
 	// Iremos buscar no escopo pai qual a opiniao atual do usuario sobre esta pain, e colocar a opiniao neste escopo.
 	$scope.currentUserOpinion = findFirst( $scope.customer.opinions, function(o) { return o.painId == $scope.pain.id && o.userId == $scope.currentUser.userId } );
 	if ( $scope.currentUserOpinion == null ) {
+		console.log( "opinion did not exist, creating one" );
 		$scope.currentUserOpinion = { userId: $scope.currentUser.userId };
 		$scope.customer.opinions.push( $scope.currentUserOpinion );
 	}
@@ -55,11 +50,14 @@ function CustomerPainOpinionController( $scope, $http, Loading ) {
 	// Quando a opinion atual muda, avisa o server.
 	var sendOpinionToServer = function(newVal, oldVal) {
 		if ( oldVal === newVal ) {
-			// console.log( "listener initialized, values haven't really changed" );
+			console.log( "listener initialized, values haven't really changed" );
 			return;
 		}
+		/*
 		$http.put( "api/customers/" + $scope.customer.id + "/opinions/" + $scope.pain.id,
 			{ value: $scope.currentUserOpinion.value, comment: $scope.currentUserOpinion.comment } ).error( Loading.error );
+			*/
+		console.log( "changing " + $scope.pain.id + " value to " + $scope.currentUserOpinion.value );
 	}
 	$scope.$watch( 'currentUserOpinion', sendOpinionToServer, true );
 }
