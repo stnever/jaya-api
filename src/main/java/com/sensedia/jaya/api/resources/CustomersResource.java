@@ -2,6 +2,7 @@ package com.sensedia.jaya.api.resources;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -96,7 +97,9 @@ public class CustomersResource {
 	@PUT
 	@Path("/{customerId}/opinions/{painId}")
 	public Response addOpinion(@RequestUser User u, @PathParam("painId") String painId,
-			@PathParam("customerId") Long customerId, Integer value, String comment) {
+			@PathParam("customerId") Long customerId, Map<String, String> data ) {
+		Integer value = Integer.valueOf(data.get("value"));
+		String comment = data.get("comment");
 		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
 
 		Opinion o = opinionDAO.findByKey(painId, customerId, u.getUserId());

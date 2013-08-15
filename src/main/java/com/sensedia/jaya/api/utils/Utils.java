@@ -107,4 +107,20 @@ public class Utils {
 
 		return result;
 	}
+
+	public static Map<String, String> makeStrMap(String... args) {
+		if (args.length % 2 != 0)
+			throw new IllegalArgumentException("Numero de parametros deve ser par");
+
+		Map<String, String> result = new HashMap<String, String>();
+		for (int i = 0; i < args.length; i = i + 2) { // anda de 2 em 2
+			if (args[i] == null)
+				throw new IllegalArgumentException("Parametros com indice par nao podem ser null");
+			String key = args[i].toString();
+			String value = args[i + 1];
+			result.put(key, value);
+		}
+
+		return result;
+	}
 }

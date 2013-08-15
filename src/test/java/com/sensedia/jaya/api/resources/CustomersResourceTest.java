@@ -50,13 +50,15 @@ public class CustomersResourceTest extends TestCase {
 	}
 
 	public void testAddOpinion() throws Exception {
-		customersResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, 3, "bla bla");
+		customersResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L,
+				Utils.makeStrMap("value", "3", "comment", "bla bla"));
 		Opinion o = opinionDAO.findByKey("PG-4", 123L, "ventura");
 		Long oId = o.getId();
 		assertNotNull(o);
 		assertEquals(o.getValue(), (Integer) 3);
 
-		customersResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, 4, "blo blo");
+		customersResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L,
+				Utils.makeStrMap("value", "4", "comment", "blo blo"));
 		o = opinionDAO.findByKey("PG-4", 123L, "ventura");
 		assertNotNull(o);
 		assertEquals(o.getValue(), (Integer) 4);

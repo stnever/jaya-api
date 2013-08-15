@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('catalog-manager',['ngLoading'])
+angular.module('catalog-manager',['ngLoading', 'ngButtonsRadio'])
     .config( ['$routeProvider', function($routeProvider) {
         $routeProvider
 			.when('/home',      {templateUrl: 'partials/home.html' })
