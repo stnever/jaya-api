@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -30,7 +31,7 @@ public class AccessResource {
 	private UserDAO userDAO;
 
 	private HttpClient httpClient;
-	
+
 	private GoogleConfiguration googleConfig;
 
 	private static Logger _logger = LoggerFactory.getLogger(AccessResource.class.getName());
@@ -53,7 +54,12 @@ public class AccessResource {
 			JsonNode tokeninfo = get("https://www.googleapis.com/oauth2/v1/tokeninfo", "access_token", accessToken);
 			String email = tokeninfo.has("email") ? tokeninfo.get("email").textValue() : null;
 			String userId = tokeninfo.has("user_id") ? tokeninfo.get("user_id").textValue() : null;
-			
+
+			// valida se o usuário é de um domínio específico
+			if ( ! Utils.isBlank( googleConfig.getRestrictDomain() ) && ! email.endsWith(googleConfig.getRestrictDomain() ) ) {
+				return Response.status(Status.FORBIDDEN).entity("unacceptable_domain").build();
+			}
+
 			// Obtem o client_id e valida que é igual ao nosso
 			String clientId = tokeninfo.get("audience").textValue();
 			if ( ! clientId.equals(googleConfig.getClientId())) {
@@ -63,6 +69,8 @@ public class AccessResource {
 			// Obtem o nome a partir do /me
 			JsonNode userinfo = get("https://www.googleapis.com/plus/v1/people/me", "access_token", accessToken);
 			String name = userinfo.has("displayName") ? userinfo.get("displayName").textValue() : null;
+
+			// String image = userinfo.path("image").path("url").textValue();
 
 			_logger.debug("User information: name {}, email {}, userId {}", name, email, userId);
 

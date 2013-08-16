@@ -71,7 +71,7 @@
       <form class="form-signin">
         <h2 class="form-signin-heading">To use Jaya,</h2>
 		<p>please use your sensedia.com Google Account:</p>
-        <button id="customBtn" class="btn btn-large btn-google btn-block" type="submit">
+        <button id="customBtn" class="btn btn-large btn-google btn-block" type="button">
 			<span class="icon"></span>
 			<span class="buttonText">Sign in with Google</span>
 		</button>
@@ -96,6 +96,7 @@
 				'callback': 'signInCallback',
 				// 'redirecturi': 'postmessage',
 				// 'accesstype': 'offline',
+				'hd': 'sensedia.com',
 				'clientid': '645297680906-fjr47j44us470n5g4hpent6g9hvd8nja.apps.googleusercontent.com',
 				'cookiepolicy': 'single_host_origin',
 				'requestvisibleactions': 'http://schemas.google.com/AddActivity',
@@ -119,11 +120,13 @@
 						$("#customBtn").addClass("hide");
 						$("p.alert").removeClass("alert-danger hide").addClass( "alert-success").html("Success!").show();
 						localStorage[ 'Jaya-Session-ID' ] = result;
+						localStorage[ 'Jaya-Access-Token' ] = authResult['access_token'];
 						setTimeout( function() { window.location.href = "index.html" }, 1000 );
 
 					},
 					error: function(result) {
 						console.dir(result);
+						$.get('https://accounts.google.com/o/oauth2/revoke?token=' + authResult['access_token']);
 					},
 					processData: false,
 					data: authResult['access_token']

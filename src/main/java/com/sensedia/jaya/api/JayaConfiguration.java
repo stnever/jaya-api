@@ -41,7 +41,7 @@ public class JayaConfiguration extends Configuration {
 	public HttpClientConfiguration getHttpClientConfiguration() {
 		return httpClient;
 	}
-	
+
 	public GoogleConfiguration getGoogleConfiguration() {
 		return googleApp;
 	}
@@ -87,8 +87,16 @@ public class JayaConfiguration extends Configuration {
 		@JsonProperty
 		private String clientId;
 
+		@Valid
+		@JsonProperty
+		private String restrictDomain;
+
 		public String getClientId() {
 			return clientId;
+		}
+
+		public String getRestrictDomain() {
+			return restrictDomain;
 		}
 	}
 }

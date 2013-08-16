@@ -18,6 +18,9 @@ public class JsonNodeTest extends TestCase {
 		assertNull(n.get("missing_field"));
 
 		assertEquals("blabla", n.get("fields").get("summary").asText());
+		assertEquals("blabla", n.path("fields").path("summary").textValue());
+		assertEquals(null, n.path("image").path("url").textValue());
+
 
 		assertTrue(n.has("issues"));
 		System.out.println(n.findValue("issues").elements());
@@ -26,6 +29,8 @@ public class JsonNodeTest extends TestCase {
 			JsonNode issue = it.next();
 			System.out.println(issue.get("key"));
 		}
+
+
 
 	}
 }

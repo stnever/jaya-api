@@ -16,6 +16,8 @@ angular.module('ngLoading', [])
 			},
 			
 			error : function( arg, arg1 ) {
+				console.log( "Loading.error: " + arg + " " + arg1 );
+				
 				var msg = null, heading = "";
 				
 				// quando usado com $http.error(), esta funcao eh chamada com mais de um argumento.

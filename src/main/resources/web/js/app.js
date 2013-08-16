@@ -54,7 +54,7 @@ angular.module('catalog-manager',['ngLoading', 'ngButtonsRadio'])
 		$httpProvider.responseInterceptors.push(interceptor);
 	})
 	
-    .run( function($rootScope, $location, $http) {
+    .run( function($rootScope, $location, $http, $window) {
 	
 		// Desliga o overlay quando clicamos em cima.
 		// $(function() { $("#overlay").click(function() { $(this).addClass("off") }) });
@@ -69,6 +69,14 @@ angular.module('catalog-manager',['ngLoading', 'ngButtonsRadio'])
 		$http.get("api/access/me").success(function(data) {
 			$rootScope.currentUser = data;
 		});
+		
+		var disconnectFromJaya = function() { return $http.get("api/access/disconnect") };
+		var disconnectFromGoogle = function() { return $http.get('https://accounts.google.com/o/oauth2/revoke?token=' + localStorage['Jaya-Access-Token']) };
+		var redirectToLogin = function() { $window.location.href = "login.html" }
+		
+		$rootScope.logout = function() {
+			disconnectFromJaya().then(disconnectFromGoogle).then(redirectToLogin).then( null, function() { Loading.error("Logout failed") } );
+		}
     	
     })	
     ;
