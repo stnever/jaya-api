@@ -42,7 +42,7 @@ public class AccessResourceTest extends TestCase {
 		assertFalse(Utils.isBlank(o));
 		System.out.println(o);
 
-		accessResource.disconnectFromGoogle(u);
+		accessResource.disconnectFromGoogle(u, null);
 		u = userDAO.findById(u.getUserId());
 		assertTrue(Utils.isBlank(u.getSessionId()));
 

@@ -53,10 +53,8 @@ function CustomerPainOpinionController( $scope, $http, Loading ) {
 			console.log( "listener initialized, values haven't really changed" );
 			return;
 		}
-		/*
 		$http.put( "api/customers/" + $scope.customer.id + "/opinions/" + $scope.pain.id,
 			{ value: $scope.currentUserOpinion.value, comment: $scope.currentUserOpinion.comment } ).error( Loading.error );
-			*/
 		console.log( "changing " + $scope.pain.id + " value to " + $scope.currentUserOpinion.value );
 	}
 	$scope.$watch( 'currentUserOpinion', sendOpinionToServer, true );

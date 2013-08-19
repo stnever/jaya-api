@@ -12,6 +12,6 @@ angular.module('ngButtonsRadio', [])
                         "ng-class='{active: option == model}'"+
                         "ng-repeat='option in options' "+
                         "ng-click='activate(option)'>{{option}} "+
-                      "</button></div><span>{{model}}</span>"
+                      "</button></div>"
         };
     });

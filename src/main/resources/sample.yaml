@@ -11,6 +11,7 @@ logging:
 
 googleApp:
   clientId: "..."
+# restrictDomain: "..."  
 
 httpClient:
   timeout: 2500ms

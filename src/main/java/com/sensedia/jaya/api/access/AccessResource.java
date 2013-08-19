@@ -1,5 +1,6 @@
 package com.sensedia.jaya.api.access;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -7,10 +8,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -36,7 +39,7 @@ public class AccessResource {
 
 	private static Logger _logger = LoggerFactory.getLogger(AccessResource.class.getName());
 
-	public AccessResource(UserDAO userDAO, HttpClient client, GoogleConfiguration googleConfig ) {
+	public AccessResource(UserDAO userDAO, HttpClient client, GoogleConfiguration googleConfig) {
 		super();
 		this.userDAO = userDAO;
 		this.httpClient = client;
@@ -56,14 +59,15 @@ public class AccessResource {
 			String userId = tokeninfo.has("user_id") ? tokeninfo.get("user_id").textValue() : null;
 
 			// valida se o usuário é de um domínio específico
-			if ( ! Utils.isBlank( googleConfig.getRestrictDomain() ) && ! email.endsWith(googleConfig.getRestrictDomain() ) ) {
+			if (!Utils.isBlank(googleConfig.getRestrictDomain()) && !email.endsWith(googleConfig.getRestrictDomain())) {
 				return Response.status(Status.FORBIDDEN).entity("unacceptable_domain").build();
 			}
 
 			// Obtem o client_id e valida que é igual ao nosso
 			String clientId = tokeninfo.get("audience").textValue();
-			if ( ! clientId.equals(googleConfig.getClientId())) {
-				throw new RuntimeException( "Token audience (" + clientId + ") does not match configured clientId (" + googleConfig.getClientId() + ")");
+			if (!clientId.equals(googleConfig.getClientId())) {
+				throw new RuntimeException("Token audience (" + clientId + ") does not match configured clientId ("
+						+ googleConfig.getClientId() + ")");
 			}
 
 			// Obtem o nome a partir do /me
@@ -103,12 +107,25 @@ public class AccessResource {
 
 	@POST
 	@Path("/disconnect")
-	public Response disconnectFromGoogle(@RequestUser User u) {
+	public Response disconnectFromGoogle(@RequestUser User u, String accessToken) throws ClientProtocolException,
+			IOException {
 		_logger.info("Disconnecting user {}", u);
 		// O processo de logout envolve apenas apagar o sessionId do user (não
 		// podemos apagar o user pois suas opiniões precisam ser mantidas)
 		u.setSessionId(null);
 		userDAO.update(u);
+
+		if (accessToken != null) {
+			_logger.info("Revoking access token {}", accessToken);
+
+			HttpGet get = new HttpGet("https://accounts.google.com/o/oauth2/revoke?token=" + accessToken);
+			HttpResponse resp = httpClient.execute(get);
+
+			if (resp.getStatusLine().getStatusCode() != 200) {
+				throw new WebApplicationException(Response.status(500)
+						.entity("Received " + resp.getStatusLine() + " while disconnecting OAuth token").build());
+			}
+		}
 
 		return Response.status(Response.Status.OK).build();
 	}
