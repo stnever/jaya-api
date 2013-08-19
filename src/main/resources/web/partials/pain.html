@@ -38,16 +38,11 @@
 		Your opinion
 	</a>
 	<div class="collapse"  ng-class="{in: !collapseOpinion}">
-		<div ng-repeat="customer in customers" class="list-group-item">
+		<div ng-repeat="customer in customers" class="list-group-item" ng-controller="PainCustomerOpinionController">
 			<h4 class="list-group-item-heading">{{customer.name}}</h4>
-			
-			<div class="btn-group" data-toggle="buttons">
-			  <label class="btn btn-primary"><input type="radio" name="options" id="option1"> 1</label>
-			  <label class="btn btn-primary"><input type="radio" name="options" id="option2"> 2</label>
-			  <label class="btn btn-primary"><input type="radio" name="options" id="option3"> 3</label>
-			  <label class="btn btn-primary"><input type="radio" name="options" id="option4"> 4</label>
-			</div>
 
+			<buttons-radio model="currentUserOpinion.value" options="possibleOpinions"></buttons-radio>		
+			
 		</div>
 	</div>
 </div>

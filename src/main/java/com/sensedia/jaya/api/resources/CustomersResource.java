@@ -103,6 +103,7 @@ public class CustomersResource {
 		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
 
 		Opinion o = opinionDAO.findByKey(painId, customerId, u.getUserId());
+		_logger.info("Retrieved opinion: {}", o);
 		if (o == null) {
 			o = new Opinion().setComment(comment).setValue(value).setPainId(painId).setCustomerId(customerId)
 					.setUserId(u.getUserId());
