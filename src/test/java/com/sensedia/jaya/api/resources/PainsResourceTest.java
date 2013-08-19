@@ -25,7 +25,7 @@ public class PainsResourceTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		DBI dbi = new DBI("jdbc:mysql://localhost:3306/kratoa-db", "root", "");
+		DBI dbi = new DBI("jdbc:mysql://localhost:3306/jaya-db", "root", "");
 		this.painCommentDAO = dbi.onDemand(PainCommentDAO.class);
 		this.opinionDAO = dbi.onDemand(OpinionDAO.class);
 

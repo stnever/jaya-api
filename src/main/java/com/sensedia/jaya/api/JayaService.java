@@ -29,8 +29,10 @@ public class JayaService extends Service<JayaConfiguration> {
 
 	public static void main(String[] args) throws Exception {
 		JaxrsApiReader.setFormatString("");
-		// new JayaService().run(args);
-		new JayaService().run(new String[] { "server", "./testing.yaml" });
+		if (args == null || args.length < 1)
+			new JayaService().run(new String[] { "server", "./testing.yaml" });
+		else
+			new JayaService().run(args);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class CustomersResourceTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		DBI dbi = new DBI("jdbc:mysql://localhost:3306/kratoa-db", "root", "");
+		DBI dbi = new DBI("jdbc:mysql://localhost:3306/jaya-db", "root", "");
 		this.customerCommentDAO = dbi.onDemand(CustomerCommentDAO.class);
 		this.opinionDAO = dbi.onDemand(OpinionDAO.class);
 		this.customerDAO = dbi.onDemand(CustomerDAO.class);

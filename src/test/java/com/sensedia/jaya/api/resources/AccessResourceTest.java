@@ -20,7 +20,7 @@ public class AccessResourceTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		DBI dbi = new DBI("jdbc:mysql://localhost:3306/kratoa-db", "root", "");
+		DBI dbi = new DBI("jdbc:mysql://localhost:3306/jaya-db", "root", "");
 		this.userDAO = dbi.onDemand(UserDAO.class);
 		this.accessResource = new AccessResource(userDAO, new DefaultHttpClient(), new GoogleConfiguration());
 	}
