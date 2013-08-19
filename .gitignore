@@ -30,6 +30,7 @@ local.properties
 
 target/
 testing.yaml
+scp.properties
 
 #################
 ## Visual Studio

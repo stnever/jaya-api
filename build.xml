@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jaya" basedir=".">
+
+	<property file="scp.properties"/>
+
+	<target name="scp-to-jaya-server">
+		<input addproperty="pass" message="Senha do usuario ${user} no host ${host}:" />
+
+		<echo>
+		Se a target abaixo falhar, va em Run > External Tools > External Tools Configuration, e adicione o
+		jar jsch-0.1.48.jar ao classpath do Ant que eh usado para rodar este build.xml. Se preferir,
+		voce pode copiar esse jar para $ANT_HOME/lib.
+		</echo>
+
+		<scp trust="true" todir="${user}@${host}:/java/jaya/upload" password="${pass}">
+			<fileset dir="${basedir}/target" includes="jaya-api-0.0.1-SNAPSHOT.jar" />
+		</scp>
+	</target>
+
+</project>

@@ -1,0 +1,2 @@
+scp.user = some-user
+scp.host = some-host
