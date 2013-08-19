@@ -53,6 +53,11 @@
 		Aggregate results
 	</a>
 	<div class="collapse"  ng-class="{in: !collapseResults}">
+		<ul class="list-group" ng-hide="shouldShow">
+			<li class="list-group-item" style="text-align: center">
+				<img src="img/loading-white.gif"/>
+			</li>
+		</ul>
 		<ul class="list-group">
 			<li class="list-group-item" ng-repeat="customer in pain.customers">
 				<h4 class="list-group-item-heading">{{customer.name}} <span class="badge">{{customer.totalWeight / customer.opinionsCount}}</span></h4>
