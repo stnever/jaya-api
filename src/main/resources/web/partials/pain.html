@@ -53,12 +53,14 @@
 		Aggregate results
 	</a>
 	<div class="collapse"  ng-class="{in: !collapseResults}">
-		<ul class="list-group" ng-hide="shouldShow">
-			<li class="list-group-item" style="text-align: center">
-				<img src="img/loading-white.gif"/>
-			</li>
-		</ul>
 		<ul class="list-group">
+			<li class="list-group-item" style="text-align: center">
+				<img src="img/loading-white.gif" ng-loading="refreshingResults" data-loading-when="progress"/>
+				<span class="alert alert-success" ng-loading="refreshingResults" data-loading-when="success">Success!</span>
+				<span class="alert alert-danger" ng-loading="refreshingResults" data-loading-when="error">Success!</span>
+				
+				<button type="button" class="btn btn-default" ng-loading="refreshingResults" data-loading-when="stopped" ng-click="refreshResults()">Refresh</button>
+			</li>
 			<li class="list-group-item" ng-repeat="customer in pain.customers">
 				<h4 class="list-group-item-heading">{{customer.name}} <span class="badge">{{customer.totalWeight / customer.opinionsCount}}</span></h4>
 				<p class="list-group-item-text" ng-repeat="opinion in customer.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>

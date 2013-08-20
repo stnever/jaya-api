@@ -1,6 +1,23 @@
 angular.module('ngLoading', [])
 	.factory('Loading', function( $rootScope, $timeout ) {
+		
 		return {
+			
+			task: function(taskName) {
+			
+				var taskControl = {
+					name: taskName,
+					inProgress: true,
+					success: null,
+					message: null,
+					
+					start: function() { this.inProgress = true; return this },
+					success: function(msg) { this.inProgress = false; this.success = true; this.message = msg; return this },
+					error: function(msg) { this.inProgress = false; this.success = false; this.message = msg; return this }
+				}
+
+				return taskControl;
+			},
 			
 			start : function(msg) {
 				$("#overlay").removeClass("off").addClass("spinning");
@@ -60,4 +77,30 @@ angular.module('ngLoading', [])
 			template: '<div class="spinner alert"><button type="button" class="close">&times;</button><span>&nbsp;</span></div>',
 			replace: true //replace the directive element with the output of the template.
 		}
-	});
+	})
+	.directive('ngLoading', function() {
+		return {
+			replace: true,
+			restrict: 'A',
+			link: function(scope, element, attr, controller) {
+				console.log("loading task: " + attr.ngLoading);
+				
+				var loadingWhen = attr.loadingWhen;
+				console.log("when to show: " + loadingWhen);
+				
+				scope.$watch(attr.ngLoading, function(taskControl) {
+					console.log("current taskControl: " + taskControl);
+					if ( typeof(taskControl) === "undefined" || taskControl == null )
+						taskControl = { inProgress: false, success: false, error: false }
+						
+					var display;
+					if ( loadingWhen == "stopped" ) display = !taskControl.inProgress;
+					else if ( loadingWhen == "progress" ) display = taskControl.inProgress;
+					else if ( loadingWhen == "success" ) display = ( ! taskControl.inProgress && taskControl.success );
+					else if ( loadingWhen == "error"   ) display = ( ! taskControl.inProgress && taskControl.error );
+					element.css('display', display ? '' : 'none');
+				}, true);
+			}
+		};
+	})
+	;

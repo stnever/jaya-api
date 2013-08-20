@@ -2,7 +2,7 @@ function PainsController( $scope, $http ) {
 	$http.get( "api/pains" ).success( function(data) { $scope.pains = data; } );
 }
 
-function PainDetailsController( $scope, $http, $routeParams, Loading, $q ) {
+function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeout ) {
 	var calculateAverages = function( pain ) {
 		pain.customers = [];
 		angular.forEach( pain.opinions, function(opinion) {
@@ -35,6 +35,11 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q ) {
 	$scope.collapseResults = true;
 	
 	$scope.possibleOpinions = [ 1, 2, 3, 4 ];
+	
+	$scope.refreshResults = function() {
+		$scope.refreshingResults = Loading.task("refreshingResults").start();
+		$timeout( function() { $scope.refreshingResults.success() }, 2000 );
+	}
 }
 
 function PainCustomerOpinionController( $scope, $http, Loading ) {
