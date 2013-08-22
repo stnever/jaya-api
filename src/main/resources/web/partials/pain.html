@@ -8,63 +8,68 @@
   <li class="active">Details</li>
 </ul>
 
-<h3>
-	<a class="pull-right btn btn-mini btn-primary" href="#/pains/{{pain.id}}/edit">Edit</a>
-	{{pain.title}}
-</h3>
-<p>{{pain.description}}</p>
+<p class="text-center" ng-show="loadingPage.ongoing()"><img src="img/loading-white.gif" /></p>
+<p class="alert alert-danger" ng-show="loadingPage.failed()">{{loadingPage.message}}</p>
+
+<div ng-show="loadingPage.successful()">
+	<h3>
+		<a class="pull-right btn btn-mini btn-primary" href="#/pains/{{pain.id}}/edit">Edit</a>
+		{{pain.title}}
+	</h3>
+	<p>{{pain.description}}</p>
 
 
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseComments = ! collapseComments">
-		<i class="icon-fixed-width" ng-class="( collapseComments && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
-		Comments
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseComments}">
-		<div ng-repeat="comment in pain.comments" class="list-group-item">
-			{{comment.text}}
-			<small class="pull-right text-muted">{{comment.timeAgo}} by {{comment.author}}</small>
-		</div>
-		<div class="list-group-item" style="text-align: center">
-			<button class="btn btn-success">Add comment</button>
-		</div>
-	</div>
-</div>
-
-
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseOpinion = ! collapseOpinion">
-		<i class="icon-fixed-width" ng-class="{ 'icon-chevron-right': collapseOpinion, 'icon-chevron-down': ! collapseOpinion}"></i>
-		Your opinion
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseOpinion}">
-		<div ng-repeat="customer in customers" class="list-group-item" ng-controller="PainCustomerOpinionController">
-			<h4 class="list-group-item-heading">{{customer.name}}</h4>
-
-			<buttons-radio model="currentUserOpinion.value" options="possibleOpinions"></buttons-radio>		
-			
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseComments = ! collapseComments">
+			<i class="icon-fixed-width" ng-class="( collapseComments && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
+			Comments
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseComments}">
+			<div ng-repeat="comment in pain.comments" class="list-group-item">
+				{{comment.text}}
+				<small class="pull-right text-muted">{{comment.timeAgo}} by {{comment.author}}</small>
+			</div>
+			<div class="list-group-item" style="text-align: center">
+				<button class="btn btn-success">Add comment</button>
+			</div>
 		</div>
 	</div>
-</div>
 
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseResults = ! collapseResults">
-		<i class="icon-fixed-width" ng-class="( collapseResults && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
-		Aggregate results
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseResults}">
-		<ul class="list-group">
-			<li class="list-group-item" style="text-align: center">
-				<img src="img/loading-white.gif" ng-loading="refreshingResults" data-loading-when="progress"/>
-				<span class="alert alert-success" ng-loading="refreshingResults" data-loading-when="success">Success!</span>
-				<span class="alert alert-danger" ng-loading="refreshingResults" data-loading-when="error">Success!</span>
+
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseOpinion = ! collapseOpinion">
+			<i class="icon-fixed-width" ng-class="{ 'icon-chevron-right': collapseOpinion, 'icon-chevron-down': ! collapseOpinion}"></i>
+			Your opinion
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseOpinion}">
+			<div ng-repeat="customer in customers" class="list-group-item" ng-controller="PainCustomerOpinionController">
+				<h4 class="list-group-item-heading">{{customer.name}}</h4>
+
+				<buttons-radio model="currentUserOpinion.value" options="possibleOpinions"></buttons-radio>		
 				
-				<button type="button" class="btn btn-default" ng-loading="refreshingResults" data-loading-when="stopped" ng-click="refreshResults()">Refresh</button>
-			</li>
-			<li class="list-group-item" ng-repeat="customer in pain.customers">
-				<h4 class="list-group-item-heading">{{customer.name}} <span class="badge">{{customer.totalWeight / customer.opinionsCount}}</span></h4>
-				<p class="list-group-item-text" ng-repeat="opinion in customer.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>
-			</li>
-		</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseResults = ! collapseResults">
+			<i class="icon-fixed-width" ng-class="( collapseResults && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
+			Aggregate results
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseResults}">
+			<ul class="list-group">
+				<li class="list-group-item" style="text-align: center">
+				
+					<img src="img/loading-white.gif" ng-show="refreshingResults.ongoing()"/>
+					<span class="alert alert-danger" ng-show="refreshingResults.failed()">{{refreshingResults.message}}. <button type="button" class="btn btn-danger" ng-click="refreshResults()">Try again</button></span>
+					<button type="button" class="btn btn-default" ng-hide="refreshingResults.ongoing() || refreshingResults.failed()" ng-click="refreshResults()">Refresh</button>
+					
+				</li>
+				<li class="list-group-item" ng-repeat="customer in pain.customers">
+					<h4 class="list-group-item-heading">{{customer.name}} <span class="badge">{{customer.totalWeight / customer.opinionsCount}}</span></h4>
+					<p class="list-group-item-text" ng-repeat="opinion in customer.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>

@@ -7,13 +7,20 @@ angular.module('ngLoading', [])
 			
 				var taskControl = {
 					name: taskName,
-					inProgress: true,
-					success: null,
+					state: "waiting",
+					result: null,
 					message: null,
 					
-					start: function() { this.inProgress = true; return this },
-					success: function(msg) { this.inProgress = false; this.success = true; this.message = msg; return this },
-					error: function(msg) { this.inProgress = false; this.success = false; this.message = msg; return this }
+					start: function(msg) { this.state = "ongoing"; this.result = null; this.message = msg; return this },
+					success: function(msg) { this.state = "finished"; this.result = "success"; this.message = msg; return this },
+					error: function(msg) { this.state = "finished"; this.result = "error"; this.message = msg; return this },
+					reset: function(msg) { this.state = "waiting"; this.result = null; this.message = msg; return this },
+					
+					waiting: function() { return this.state == "waiting" },
+					ongoing: function() { return this.state == "ongoing" },
+					finished: function() { return this.state == "finished" },
+					successful: function() { return this.state == "finished" && this.result == "success" },
+					failed: function() { return this.state == "finished" && this.result == "error" },
 				}
 
 				return taskControl;
@@ -86,7 +93,6 @@ angular.module('ngLoading', [])
 				console.log("loading task: " + attr.ngLoading);
 				
 				var loadingWhen = attr.loadingWhen;
-				console.log("when to show: " + loadingWhen);
 				
 				scope.$watch(attr.ngLoading, function(taskControl) {
 					console.log("current taskControl: " + taskControl);
@@ -94,6 +100,9 @@ angular.module('ngLoading', [])
 						taskControl = { inProgress: false, success: false, error: false }
 						
 					var display;
+					
+					console.log( taskControl.evalCondition( loadingWhen ) );
+					
 					if ( loadingWhen == "stopped" ) display = !taskControl.inProgress;
 					else if ( loadingWhen == "progress" ) display = taskControl.inProgress;
 					else if ( loadingWhen == "success" ) display = ( ! taskControl.inProgress && taskControl.success );

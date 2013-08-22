@@ -1,5 +1,6 @@
-function CustomersController( $scope, $http ) {
-	$http.get( "api/customers" ).success( function(data) { $scope.customers = data; } );
+function CustomersController( $scope, $http, Loading ) {
+	$scope.loadingPage = Loading.task().start();
+	$http.get( "api/customers" ).success( function(data) { $scope.customers = data; $scope.loadingPage.success() } ).error( $scope.loadingPage.error );
 }
 
 function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
@@ -18,8 +19,8 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 			pain.opinionsCount++;
 		});
 	}
-	
-	Loading.start();
+
+	$scope.loadingPage = Loading.task().start();	
 	$q.all([
 		$http.get( "api/pains" ),
 		$http.get( "api/customers/" + $routeParams.id )
@@ -27,7 +28,7 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 		$scope.pains = responses[0].data;
 		$scope.customer = responses[1].data;
 		calculateAverages($scope.customer);
-		Loading.hide();
+		$scope.loadingPage.success();
 	});
 
 	$scope.collapseComments = true;

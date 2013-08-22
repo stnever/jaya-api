@@ -1,5 +1,6 @@
-function PainsController( $scope, $http ) {
-	$http.get( "api/pains" ).success( function(data) { $scope.pains = data; } );
+function PainsController( $scope, $http, Loading ) {
+	$scope.loadingPage = Loading.task().start();
+	$http.get( "api/pains" ).success( function(data) { $scope.pains = data; $scope.loadingPage.success() } ).error( $scope.loadingPage.error );
 }
 
 function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeout ) {
@@ -19,7 +20,7 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeo
 		});
 	}
 	
-	Loading.start();
+	$scope.loadingPage = Loading.task().start();
 	$q.all([
 		$http.get( "api/customers" ),
 		$http.get( "api/pains/" + $routeParams.id )
@@ -27,7 +28,7 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeo
 		$scope.customers = responses[0].data;
 		$scope.pain = responses[1].data;
 		calculateAverages($scope.pain);
-		Loading.hide();
+		$scope.loadingPage.success();
 	});
 	
 	$scope.collapseComments = true;
@@ -37,8 +38,8 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeo
 	$scope.possibleOpinions = [ 1, 2, 3, 4 ];
 	
 	$scope.refreshResults = function() {
-		$scope.refreshingResults = Loading.task("refreshingResults").start();
-		$timeout( function() { $scope.refreshingResults.success() }, 2000 );
+		$scope.refreshingResults = Loading.task().start();
+		$timeout( function() { $scope.refreshingResults.error("something went wrong") }, 2000 );
 	}
 }
 

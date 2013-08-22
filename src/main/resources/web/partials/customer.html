@@ -8,54 +8,59 @@
   <li class="active">Details</li>
 </ul>
 
-<h3>
-	<a class="pull-right btn btn-mini btn-primary" href="#/customers/{{customer.id}}/edit">Edit</a>
-	{{customer.name}}
-</h3>
-<p>{{customer.description}}</p>
+<p class="text-center" ng-show="loadingPage.ongoing()"><img src="img/loading-white.gif" /></p>
+<p class="alert alert-danger" ng-show="loadingPage.failed()">{{loadingPage.message}}</p>
 
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseComments = ! collapseComments">
-		<i class="icon-fixed-width" ng-class="( collapseComments && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
-		Comments
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseComments}">
-		<div ng-repeat="comment in customer.comments" class="list-group-item">
-			{{comment.text}}
-			<small class="pull-right text-muted">{{comment.timeAgo}} by {{comment.author}}</small>
-		</div>
-		<div class="list-group-item" style="text-align: center">
-			<button class="btn btn-success">Add comment</button>
-		</div>
-	</div>
-</div>
+<div ng-show="loadingPage.successful()">
+	<h3>
+		<a class="pull-right btn btn-mini btn-primary" href="#/customers/{{customer.id}}/edit">Edit</a>
+		{{customer.name}}
+	</h3>
+	<p>{{customer.description}}</p>
 
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseOpinion = ! collapseOpinion">
-		<i class="icon-fixed-width" ng-class="{ 'icon-chevron-right': collapseOpinion, 'icon-chevron-down': ! collapseOpinion}"></i>
-		Your opinion
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseOpinion}">
-		<div class="list-group-item" ng-repeat="pain in pains" ng-controller="CustomerPainOpinionController">
-			<h4 class="list-group-item-heading">{{pain.title}}</h4>
-			
-			<buttons-radio model="currentUserOpinion.value" options="possibleOpinions"></buttons-radio>
-
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseComments = ! collapseComments">
+			<i class="icon-fixed-width" ng-class="( collapseComments && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
+			Comments
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseComments}">
+			<div ng-repeat="comment in customer.comments" class="list-group-item">
+				{{comment.text}}
+				<small class="pull-right text-muted">{{comment.timeAgo}} by {{comment.author}}</small>
+			</div>
+			<div class="list-group-item" style="text-align: center">
+				<button class="btn btn-success">Add comment</button>
+			</div>
 		</div>
 	</div>
-</div>
 
-<div class="list-group">
-	<a class="list-group-item active" ng-click="collapseResults = ! collapseResults">
-		<i class="icon-fixed-width" ng-class="( collapseResults && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
-		Aggregate results
-	</a>
-	<div class="collapse"  ng-class="{in: !collapseResults}">
-		<ul class="list-group">
-			<li class="list-group-item" ng-repeat="pain in customer.pains">
-				<h4 class="list-group-item-heading">{{pain.title}} <span class="badge">{{pain.totalWeight / pain.opinionsCount}}</span></h4>
-				<p class="list-group-item-text" ng-repeat="opinion in pain.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>
-			</li>
-		</ul>
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseOpinion = ! collapseOpinion">
+			<i class="icon-fixed-width" ng-class="{ 'icon-chevron-right': collapseOpinion, 'icon-chevron-down': ! collapseOpinion}"></i>
+			Your opinion
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseOpinion}">
+			<div class="list-group-item" ng-repeat="pain in pains" ng-controller="CustomerPainOpinionController">
+				<h4 class="list-group-item-heading">{{pain.title}}</h4>
+				
+				<buttons-radio model="currentUserOpinion.value" options="possibleOpinions"></buttons-radio>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="list-group">
+		<a class="list-group-item active" ng-click="collapseResults = ! collapseResults">
+			<i class="icon-fixed-width" ng-class="( collapseResults && 'icon-chevron-right' || 'icon-chevron-down' )"></i>
+			Aggregate results
+		</a>
+		<div class="collapse"  ng-class="{in: !collapseResults}">
+			<ul class="list-group">
+				<li class="list-group-item" ng-repeat="pain in customer.pains">
+					<h4 class="list-group-item-heading">{{pain.title}} <span class="badge">{{pain.totalWeight / pain.opinionsCount}}</span></h4>
+					<p class="list-group-item-text" ng-repeat="opinion in pain.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>
+				</li>
+			</ul>
+		</div>
 	</div>
 </div>
