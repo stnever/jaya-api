@@ -90,9 +90,6 @@ function lazyGet( obj, key, defVal ) {
 	}
 }
 
-function ResultsController( $scope, $http ) {
-}
-
 var findFirst = function( l, f ) {
 	for ( var i = 0; i < l.length; i++ )
 		if ( f(l[i]) )

@@ -16,6 +16,7 @@ import com.sensedia.jaya.api.resources.MyApiListingResourceJSON;
 import com.sensedia.jaya.api.resources.OpinionsResource;
 import com.sensedia.jaya.api.resources.PainsResource;
 import com.sensedia.jaya.api.resources.UnlinkedIssuesResource;
+import com.sensedia.jaya.api.resources.UsersResource;
 import com.thetransactioncompany.cors.CORSFilter;
 import com.wordnik.swagger.jaxrs.JaxrsApiReader;
 import com.yammer.dropwizard.Service;
@@ -62,6 +63,7 @@ public class JayaService extends Service<JayaConfiguration> {
 		env.addResource(new OpinionsResource(opinionDao));
 		env.addResource(new MyApiListingResourceJSON());
 		env.addResource(new UnlinkedIssuesResource(httpClient, config.getJiraConfiguration()));
+		env.addResource(new UsersResource(userDao));
 
 		env.addFilter(CORSFilter.class, config.getHttpConfiguration().getRootPath())
 				.setInitParam("allowedOrigins", "*")
