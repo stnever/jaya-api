@@ -39,7 +39,10 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeo
 	
 	$scope.refreshResults = function() {
 		$scope.refreshingResults = Loading.task().start();
-		$timeout( function() { $scope.refreshingResults.error("something went wrong") }, 2000 );
+		$http.get("api/pains/" + $scope.pain.id + "/results").then(
+			function(response) { $scope.aggregateResults = response.data; $scope.refreshingResults.success(); },
+			function(response) { $scope.refreshingResults.error() }
+		);
 	}
 }
 

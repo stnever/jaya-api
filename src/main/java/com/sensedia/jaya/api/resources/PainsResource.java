@@ -1,9 +1,12 @@
 package com.sensedia.jaya.api.resources;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -25,8 +28,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sensedia.jaya.api.JayaConfiguration.JiraConfiguration;
 import com.sensedia.jaya.api.access.RequestUser;
+import com.sensedia.jaya.api.dao.CustomerDAO;
 import com.sensedia.jaya.api.dao.OpinionDAO;
 import com.sensedia.jaya.api.dao.PainCommentDAO;
+import com.sensedia.jaya.api.model.AggregateResult;
 import com.sensedia.jaya.api.model.Comment;
 import com.sensedia.jaya.api.model.Opinion;
 import com.sensedia.jaya.api.model.Pain;
@@ -50,13 +55,16 @@ public class PainsResource {
 
 	private HttpClient httpClient;
 
+	private CustomerDAO customerDAO;
+
 	public PainsResource(JiraConfiguration jiraConfiguration, PainCommentDAO commentDAO, OpinionDAO opinionDAO,
-			HttpClient httpClient) {
+			HttpClient httpClient, CustomerDAO customerDAO) {
 		super();
 		this.jiraConfiguration = jiraConfiguration;
 		this.commentDAO = commentDAO;
 		this.opinionDAO = opinionDAO;
 		this.httpClient = httpClient;
+		this.customerDAO = customerDAO;
 	}
 
 	private static Logger _logger = LoggerFactory.getLogger(PainsResource.class.getName());
@@ -88,7 +96,7 @@ public class PainsResource {
 
 		JsonNode jsonIssue = get("/issue/" + id);
 		Pain pain = new Pain().setId(jsonIssue.get("key").textValue());
-		
+
 		pain.setTitle(jsonIssue.get("fields").get("summary").textValue());
 		pain.setDescription(jsonIssue.get("fields").get("description").textValue());
 
@@ -164,5 +172,30 @@ public class PainsResource {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@GET
+	@Path("{painId}/results")
+	public List<AggregateResult> calculateAggregateResults(@PathParam("painId") String painId) {
+		Map<Long, AggregateResult> aggregates = new HashMap<Long, AggregateResult>();
+
+		JsonNode jsonIssue = get("/issue/" + painId);
+		String painName = jsonIssue.get("fields").get("summary").textValue();
+
+		List<Opinion> painOpinions = opinionDAO.findByPain(painId);
+		for (Opinion op : painOpinions) {
+			AggregateResult r = aggregates.get(op.getCustomerId());
+			if (r == null) {
+				String customerName = customerDAO.findById(op.getCustomerId()).getName();
+				r = new AggregateResult().setCustomerId(op.getCustomerId()).setPainId(painId).setPainName(painName)
+						.setCustomerName(customerName);
+				aggregates.put(op.getCustomerId(), r);
+			}
+			r.addOpinion(op);
+		}
+
+		List<AggregateResult> results = new ArrayList<AggregateResult>(aggregates.values());
+		Collections.sort(results, AggregateResult.AverageDescendingComparator);
+		return results;
 	}
 }

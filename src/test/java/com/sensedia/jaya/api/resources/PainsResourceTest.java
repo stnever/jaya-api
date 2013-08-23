@@ -11,6 +11,7 @@ import org.skife.jdbi.v2.DBI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.sensedia.jaya.api.JayaConfiguration;
+import com.sensedia.jaya.api.dao.CustomerDAO;
 import com.sensedia.jaya.api.dao.OpinionDAO;
 import com.sensedia.jaya.api.dao.PainCommentDAO;
 import com.sensedia.jaya.api.model.Opinion;
@@ -28,11 +29,12 @@ public class PainsResourceTest extends TestCase {
 		DBI dbi = new DBI("jdbc:mysql://localhost:3306/jaya-db", "root", "");
 		this.painCommentDAO = dbi.onDemand(PainCommentDAO.class);
 		this.opinionDAO = dbi.onDemand(OpinionDAO.class);
+		CustomerDAO customerDAO = dbi.onDemand(CustomerDAO.class);
 
 		JayaConfiguration config = new ObjectMapper(new YAMLFactory()).readValue(new File("./testing.yaml"),
 				JayaConfiguration.class);
 		painsResource = new PainsResource(config.getJiraConfiguration(), painCommentDAO, opinionDAO,
-				new DefaultHttpClient());
+				new DefaultHttpClient(), customerDAO);
 	}
 
 	public void testFindPains() throws Exception {

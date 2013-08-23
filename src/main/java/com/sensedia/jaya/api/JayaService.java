@@ -58,7 +58,7 @@ public class JayaService extends Service<JayaConfiguration> {
 		HttpClient httpClient = new HttpClientBuilder().using(config.getHttpClientConfiguration()).build();
 
 		env.addResource(new AccessResource(userDao, httpClient, config.getGoogleConfiguration()));
-		env.addResource(new PainsResource(config.getJiraConfiguration(), painCommentDao, opinionDao, httpClient));
+		env.addResource(new PainsResource(config.getJiraConfiguration(), painCommentDao, opinionDao, httpClient, customerDao));
 		env.addResource(new CustomersResource(customerDao, customerCommentDao, opinionDao));
 		env.addResource(new OpinionsResource(opinionDao));
 		env.addResource(new MyApiListingResourceJSON());
