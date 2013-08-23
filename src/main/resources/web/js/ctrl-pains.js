@@ -21,14 +21,19 @@ function PainDetailsController( $scope, $http, $routeParams, Loading, $q, $timeo
 	}
 	
 	$scope.loadingPage = Loading.task().start();
+	$scope.refreshingResults = Loading.task();
+
 	$q.all([
 		$http.get( "api/customers" ),
-		$http.get( "api/pains/" + $routeParams.id )
+		$http.get( "api/pains/" + $routeParams.id ),
+		$http.get("api/pains/" + $routeParams.id + "/results")
 	]).then(function(responses) {
 		$scope.customers = responses[0].data;
 		$scope.pain = responses[1].data;
+		$scope.aggregateResults = responses[2].data;
 		calculateAverages($scope.pain);
 		$scope.loadingPage.success();
+		$scope.refreshingResults.success();
 	});
 	
 	$scope.collapseComments = true;

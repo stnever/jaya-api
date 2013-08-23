@@ -65,9 +65,11 @@
 					<button type="button" class="btn btn-default" ng-hide="refreshingResults.ongoing() || refreshingResults.failed()" ng-click="refreshResults()">Refresh</button>
 					
 				</li>
-				<li class="list-group-item" ng-repeat="customer in pain.customers">
-					<h4 class="list-group-item-heading">{{customer.name}} <span class="badge">{{customer.totalWeight / customer.opinionsCount}}</span></h4>
-					<p class="list-group-item-text" ng-repeat="opinion in customer.opinions">{{opinion.userLogin}}: {{opinion.userWeight}}</p>
+				<li ng-show="refreshingResults.successful()" class="list-group-item" ng-repeat="customer in aggregateResults">
+					<h4 class="list-group-item-heading">{{customer.customerName}} <span class="badge">{{customer.average}}</span></h4>
+					<p class="list-group-item-text" ng-repeat="opinion in customer.opinions">
+						{{opinion.userLogin}}: <b>{{opinion.value}}</b>
+						<em ng-show="opinion.comment">- {{opinion.comment}}</em></p>
 				</li>
 			</ul>
 		</div>

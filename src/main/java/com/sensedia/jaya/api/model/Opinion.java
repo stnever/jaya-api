@@ -9,6 +9,8 @@ public class Opinion {
 	private Integer value;
 	private String comment;
 
+	private String userLogin;
+
 	public Long getId() {
 		return id;
 	}
@@ -60,6 +62,15 @@ public class Opinion {
 
 	public Opinion setComment(String comment) {
 		this.comment = comment;
+		return this;
+	}
+
+	public String getUserLogin() {
+		return userLogin;
+	}
+
+	public Opinion setUserLogin(String userLogin) {
+		this.userLogin = userLogin;
 		return this;
 	}
 

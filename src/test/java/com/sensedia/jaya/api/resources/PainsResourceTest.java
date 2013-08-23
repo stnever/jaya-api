@@ -17,6 +17,7 @@ import com.sensedia.jaya.api.dao.PainCommentDAO;
 import com.sensedia.jaya.api.model.Opinion;
 import com.sensedia.jaya.api.model.Pain;
 import com.sensedia.jaya.api.model.User;
+import com.sensedia.jaya.api.utils.Utils;
 
 public class PainsResourceTest extends TestCase {
 
@@ -53,13 +54,13 @@ public class PainsResourceTest extends TestCase {
 
 	public void testAddOpinion() throws Exception {
 		// opinionDAO.createTable();
-		painsResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, 3, "bla bla");
+		painsResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, Utils.makeStrMap("value", "3", "comment", "bla bla"));
 		Opinion o = opinionDAO.findByKey("PG-4", 123L, "ventura");
 		Long oId = o.getId();
 		assertNotNull(o);
 		assertEquals(o.getValue(), (Integer) 3);
 
-		painsResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, 4, "blo blo");
+		painsResource.addOpinion(new User().setUserId("ventura"), "PG-4", 123L, Utils.makeStrMap("value", "4", "comment", "blo blo"));
 		o = opinionDAO.findByKey("PG-4", 123L, "ventura");
 		assertNotNull(o);
 		assertEquals(o.getValue(), (Integer) 4);

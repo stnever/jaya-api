@@ -137,7 +137,10 @@ public class PainsResource {
 	@PUT
 	@Path("/{painId}/opinions/{customerId}")
 	public Response addOpinion(@RequestUser User u, @PathParam("painId") String painId,
-			@PathParam("customerId") Long customerId, Integer value, String comment) {
+			@PathParam("customerId") Long customerId, Map<String, String> data) {
+		Integer value = Integer.valueOf(data.get("value"));
+		String comment = data.get("comment");
+
 		_logger.info("Adding opinion to pain {}, customer {}, by user {}: {} {}", painId, customerId, u, value, comment);
 
 		Opinion o = opinionDAO.findByKey(painId, customerId, u.getUserId());
@@ -193,6 +196,9 @@ public class PainsResource {
 			}
 			r.addOpinion(op);
 		}
+
+		for ( AggregateResult ar : aggregates.values() )
+			ar.calculateTotal();
 
 		List<AggregateResult> results = new ArrayList<AggregateResult>(aggregates.values());
 		Collections.sort(results, AggregateResult.AverageDescendingComparator);
