@@ -10,8 +10,10 @@ import com.sensedia.jaya.api.dao.CustomerCommentDAO;
 import com.sensedia.jaya.api.dao.CustomerDAO;
 import com.sensedia.jaya.api.dao.OpinionDAO;
 import com.sensedia.jaya.api.dao.PainCommentDAO;
+import com.sensedia.jaya.api.dao.PainDAO;
 import com.sensedia.jaya.api.dao.UserDAO;
 import com.sensedia.jaya.api.resources.CustomersResource;
+import com.sensedia.jaya.api.resources.LeaderboardResource;
 import com.sensedia.jaya.api.resources.MyApiListingResourceJSON;
 import com.sensedia.jaya.api.resources.OpinionsResource;
 import com.sensedia.jaya.api.resources.PainsResource;
@@ -44,26 +46,28 @@ public class JayaService extends Service<JayaConfiguration> {
 
 	@Override
 	public void run(JayaConfiguration config, Environment env) throws Exception {
-		final DBIFactory factory = new DBIFactory();
-		final DBI jdbi = factory.build(env, config.getDatabaseConfiguration(), "jaya");
-		final UserDAO userDao = jdbi.onDemand(UserDAO.class);
-		final CustomerDAO customerDao = jdbi.onDemand(CustomerDAO.class);
-		final CustomerCommentDAO customerCommentDao = jdbi.onDemand(CustomerCommentDAO.class);
-		final PainCommentDAO painCommentDao = jdbi.onDemand(PainCommentDAO.class);
-		final OpinionDAO opinionDao = jdbi.onDemand(OpinionDAO.class);
-
-		RequestUserInjectable requestUserInjectable = new RequestUserInjectable(userDao);
-		env.addProvider(new RequestUserProvider(requestUserInjectable));
-
 		HttpClient httpClient = new HttpClientBuilder().using(config.getHttpClientConfiguration()).build();
 
-		env.addResource(new AccessResource(userDao, httpClient, config.getGoogleConfiguration()));
-		env.addResource(new PainsResource(config.getJiraConfiguration(), painCommentDao, opinionDao, httpClient, customerDao));
-		env.addResource(new CustomersResource(customerDao, customerCommentDao, opinionDao));
-		env.addResource(new OpinionsResource(opinionDao));
+		final DBIFactory factory = new DBIFactory();
+		final DBI jdbi = factory.build(env, config.getDatabaseConfiguration(), "jaya");
+		final UserDAO userDAO = jdbi.onDemand(UserDAO.class);
+		final CustomerDAO customerDAO = jdbi.onDemand(CustomerDAO.class);
+		final CustomerCommentDAO customerCommentDAO = jdbi.onDemand(CustomerCommentDAO.class);
+		final PainCommentDAO painCommentDAO = jdbi.onDemand(PainCommentDAO.class);
+		final OpinionDAO opinionDAO = jdbi.onDemand(OpinionDAO.class);
+		final PainDAO painDAO = new PainDAO(config.getJiraConfiguration(), httpClient);
+
+		RequestUserInjectable requestUserInjectable = new RequestUserInjectable(userDAO);
+		env.addProvider(new RequestUserProvider(requestUserInjectable));
+
+		env.addResource(new AccessResource(userDAO, httpClient, config.getGoogleConfiguration()));
+		env.addResource(new PainsResource(painCommentDAO, opinionDAO, customerDAO, painDAO));
+		env.addResource(new CustomersResource(customerDAO, customerCommentDAO, opinionDAO));
+		env.addResource(new OpinionsResource(opinionDAO));
 		env.addResource(new MyApiListingResourceJSON());
 		env.addResource(new UnlinkedIssuesResource(httpClient, config.getJiraConfiguration()));
-		env.addResource(new UsersResource(userDao));
+		env.addResource(new UsersResource(userDAO));
+		env.addResource(new LeaderboardResource(customerDAO, painDAO, opinionDAO));
 
 		env.addFilter(CORSFilter.class, config.getHttpConfiguration().getRootPath())
 				.setInitParam("allowedOrigins", "*")

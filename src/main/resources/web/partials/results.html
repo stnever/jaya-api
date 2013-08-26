@@ -3,30 +3,21 @@
   <li class="active">Leaderboard</li>
 </ul>
 
-<h3>Leaderboards</h3>
+<h3>Leaderboards
+	<div class="pull-right">
+		<div class="btn-group">
+			<button type="button" class="btn btn-default btn-small">Board type...</button>
+			<button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#popFilterPains">Pains...</button>
+			<button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#popFilterCustomers">Customers...</button>
+			<button type="button" class="btn btn-default btn-small" data-toggle="modal" data-target="#popFilterUsers">Users...</button>
+		</div>
+	</div>
+</h3>
 
 <p class="text-center" ng-show="loadingPage.ongoing()"><img src="img/loading-white.gif" /></p>
 <p class="alert alert-danger" ng-show="loadingPage.failed()">{{loadingPage.message}}</p>
 
 <div ng-show="loadingPage.successful()">
-
-	<div class="row">
-		<div class="col-xs-1">Filter</div>
-		<div class="col-xs-11">
-			<div class="btn-group">
-				<button type="button" class="btn btn-default btn-small">Pains</button>
-				<button type="button" class="btn btn-default btn-small">Customers</button>
-				<button type="button" class="btn btn-default btn-small">Users</button>
-			</div>
-		</div>
-	</div>
-	
-	Show
-	<div class="btn-group" data-toggle="buttons-radio">
-		<button type="button" class="btn btn-primary">Merged votes for each customer</button>
-		<button type="button" class="btn btn-primary">Individual votes, only for "Whole Product"</button>
-	</div>
-
 	<table class="table table-condensed">
 		<thead>
 			<tr>
@@ -43,4 +34,66 @@
 			</tr>
 		</tbody>
 	</table>
+
+
+<div class="modal fade" id="popFilterPains">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Filter pains</h4>
+      </div>
+      <div class="modal-body">
+		<ul>
+			<li ng-repeat="pain in pains">{{pain.title}}</li>
+		</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Apply</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="popFilterCustomers">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Filter customers</h4>
+      </div>
+      <div class="modal-body">
+		<ul>
+			<li ng-repeat="customer in customers">{{customer.name}}</li>
+		</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Apply</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="popFilterUsers">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Filter users</h4>
+      </div>
+      <div class="modal-body">
+		<ul>
+			<li ng-repeat="user in users">{{user.name}}</li>
+		</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Apply</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </div>

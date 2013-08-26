@@ -37,6 +37,9 @@ public interface OpinionDAO {
 	@SqlQuery("select o.*, u.name as user_login from t_opinion o, t_user u where o.user_id = u.user_id and o.pain_id = :it")
 	List<Opinion> findByPain(@Bind String painId);
 
+	@SqlQuery("select o.*, u.name as user_login from t_opinion o, t_user u where o.user_id = u.user_id and o.pain_id = :painId and o.customer_id = :customerId")
+	List<Opinion> findByPainAndCustomer(@Bind("painId") String painId, @Bind("customerId") Long customerId);
+
 	@SqlQuery("select o.*, u.name as user_login from t_opinion o, t_user u where o.user_id = u.user_id and o.user_id = :it")
 	List<Opinion> findByUser(@Bind String userId);
 
@@ -54,7 +57,8 @@ public interface OpinionDAO {
 		public Opinion map(int index, ResultSet r, StatementContext ctx) throws SQLException {
 			return new Opinion().setId(r.getLong("id")).setPainId(r.getString("pain_id"))
 					.setCustomerId(r.getLong("customer_id")).setUserId(r.getString("user_id"))
-					.setValue(r.getInt("value")).setComment(r.getString("comment")).setUserLogin(r.getString("user_login"));
+					.setValue(r.getInt("value")).setComment(r.getString("comment"))
+					.setUserLogin(r.getString("user_login"));
 		}
 	}
 }
