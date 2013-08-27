@@ -20,15 +20,20 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 		});
 	}
 
-	$scope.loadingPage = Loading.task().start();	
+	$scope.loadingPage = Loading.task().start();
+	$scope.refreshingResults = Loading.task();
+	
 	$q.all([
 		$http.get( "api/pains" ),
-		$http.get( "api/customers/" + $routeParams.id )
+		$http.get( "api/customers/" + $routeParams.id ),
+		$http.get( "api/customers/" + $routeParams.id + "/results" )
 	]).then(function(responses) {
 		$scope.pains = responses[0].data;
 		$scope.customer = responses[1].data;
+		$scope.aggregateResults = responses[2].data;
 		calculateAverages($scope.customer);
 		$scope.loadingPage.success();
+		$scope.refreshingResults.success();
 	});
 
 	$scope.collapseComments = true;
@@ -36,6 +41,14 @@ function CustomerDetailsController( $scope, $http, $routeParams, $q, Loading ) {
 	$scope.collapseOpinion = true;
 	
 	$scope.possibleOpinions = [ 1, 2, 3, 4 ];
+	
+	$scope.refreshResults = function() {
+		$scope.refreshingResults = Loading.task().start();
+		$http.get("api/customers/" + $scope.customer.id + "/results").then(
+			function(response) { $scope.aggregateResults = response.data; $scope.refreshingResults.success(); },
+			function(response) { $scope.refreshingResults.error() }
+		);
+	}
 }
 
 function CustomerPainOpinionController( $scope, $http, Loading ) {

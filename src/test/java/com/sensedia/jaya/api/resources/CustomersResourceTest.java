@@ -29,7 +29,7 @@ public class CustomersResourceTest extends TestCase {
 		this.customerCommentDAO = dbi.onDemand(CustomerCommentDAO.class);
 		this.opinionDAO = dbi.onDemand(OpinionDAO.class);
 		this.customerDAO = dbi.onDemand(CustomerDAO.class);
-		customersResource = new CustomersResource(customerDAO, customerCommentDAO, opinionDAO);
+		customersResource = new CustomersResource(customerDAO, customerCommentDAO, opinionDAO, null);
 	}
 
 	public void testFindAll() throws Exception {

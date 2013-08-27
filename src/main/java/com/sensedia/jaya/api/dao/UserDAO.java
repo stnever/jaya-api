@@ -16,14 +16,14 @@ import com.sensedia.jaya.api.model.User;
 
 @RegisterMapper(UserDAO.UserMapper.class)
 public interface UserDAO {
-	
+
 	@SqlUpdate("create table t_user( user_id varchar(32) not null primary key, name varchar(256) not null, email varchar(256), session_id varchar(32) )")
 	void createTable();
 
-	@SqlUpdate("insert into t_user(user_id, name, email, session_id) values (:userId, :name, :email, :sessionId)")
+	@SqlUpdate("insert into t_user(user_id, name, email, session_id, image_url) values (:userId, :name, :email, :sessionId, :imageUrl)")
 	void insert(@BindBean User u);
 
-	@SqlUpdate("update t_user set name = :name, email = :email, session_id = :sessionId where user_id = :userId")
+	@SqlUpdate("update t_user set name = :name, email = :email, session_id = :sessionId, image_url = :imageUrl where user_id = :userId")
 	void update(@BindBean User u);
 
 	@SqlQuery("select * from t_user where user_id = :it")
@@ -45,7 +45,8 @@ public interface UserDAO {
 
 		public User map(int index, ResultSet r, StatementContext ctx) throws SQLException {
 			return new User().setUserId(r.getString("user_id")).setName(r.getString("name"))
-					.setEmail(r.getString("email")).setSessionId(r.getString("session_id"));
+					.setEmail(r.getString("email")).setSessionId(r.getString("session_id"))
+					.setImageUrl(r.getString("image_url"));
 		}
 	}
 }

@@ -74,9 +74,9 @@ public class AccessResource {
 			JsonNode userinfo = get("https://www.googleapis.com/plus/v1/people/me", "access_token", accessToken);
 			String name = userinfo.has("displayName") ? userinfo.get("displayName").textValue() : null;
 
-			// String image = userinfo.path("image").path("url").textValue();
+			String image = userinfo.path("image").path("url").textValue();
 
-			_logger.debug("User information: name {}, email {}, userId {}", name, email, userId);
+			_logger.debug("User information: name {}, email {}, userId {}, imageUrl {}", name, email, userId, image);
 
 			boolean sessionIdExists = true;
 			String sessionId = null;
@@ -89,11 +89,12 @@ public class AccessResource {
 
 			User u = userDAO.findById(userId);
 			if (u == null) {
-				u = new User().setEmail(email).setName(name).setUserId(userId).setSessionId(sessionId);
+				u = new User().setEmail(email).setName(name).setUserId(userId).setSessionId(sessionId).setImageUrl(image);
 				_logger.debug("User did not exist on the database, creating now: {}", u);
 				userDAO.insert(u);
 			} else {
 				u.setSessionId(sessionId);
+				u.setImageUrl(image);
 				_logger.debug("Updating existing user: {}", u);
 				userDAO.update(u);
 			}

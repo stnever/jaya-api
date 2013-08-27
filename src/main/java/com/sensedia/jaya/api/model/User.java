@@ -10,6 +10,8 @@ public class User {
 
 	private String sessionId;
 
+	private String imageUrl;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -43,6 +45,15 @@ public class User {
 
 	public User setSessionId(String sessionId) {
 		this.sessionId = sessionId;
+		return this;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public User setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 		return this;
 	}
 

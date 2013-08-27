@@ -1,6 +1,9 @@
 package com.sensedia.jaya.api.resources;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +24,12 @@ import com.sensedia.jaya.api.access.RequestUser;
 import com.sensedia.jaya.api.dao.CustomerCommentDAO;
 import com.sensedia.jaya.api.dao.CustomerDAO;
 import com.sensedia.jaya.api.dao.OpinionDAO;
+import com.sensedia.jaya.api.dao.PainDAO;
+import com.sensedia.jaya.api.model.AggregateResult;
 import com.sensedia.jaya.api.model.Comment;
 import com.sensedia.jaya.api.model.Customer;
 import com.sensedia.jaya.api.model.Opinion;
+import com.sensedia.jaya.api.model.Pain;
 import com.sensedia.jaya.api.model.User;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -37,14 +43,16 @@ public class CustomersResource {
 	private CustomerDAO customerDAO;
 	private CustomerCommentDAO commentDAO;
 	private OpinionDAO opinionDAO;
+	private PainDAO painDAO;
 
 	private static Logger _logger = LoggerFactory.getLogger(CustomersResource.class.getName());
 
-	public CustomersResource(CustomerDAO customerDAO, CustomerCommentDAO commentDAO, OpinionDAO opinionDAO) {
+	public CustomersResource(CustomerDAO customerDAO, CustomerCommentDAO commentDAO, OpinionDAO opinionDAO, PainDAO painDAO) {
 		super();
 		this.customerDAO = customerDAO;
 		this.commentDAO = commentDAO;
 		this.opinionDAO = opinionDAO;
+		this.painDAO = painDAO;
 	}
 
 	@GET
@@ -124,4 +132,34 @@ public class CustomersResource {
 		return Response.status(Response.Status.ACCEPTED).build();
 	}
 
+	@GET
+	@Path("{customerId}/results")
+	public List<AggregateResult> calculateAggregateResults(@PathParam("customerId") Long customerId) {
+		Map<String, AggregateResult> aggregates = new HashMap<String, AggregateResult>();
+
+		String customerName = customerDAO.findById(customerId).getName();
+		
+		Map<String, String> painNames = new HashMap<String, String>();
+		for ( Pain p : painDAO.findAll() )
+			painNames.put(p.getId(), p.getTitle());
+
+		List<Opinion> painOpinions = opinionDAO.findByCustomer(customerId);
+		for (Opinion op : painOpinions) {
+			AggregateResult r = aggregates.get(op.getPainId());
+			if (r == null) {
+				String painName = painNames.get(op.getPainId());
+				r = new AggregateResult().setCustomerId(op.getCustomerId()).setPainId(op.getPainId()).setPainName(painName)
+						.setCustomerName(customerName).setCustomerId(op.getCustomerId());
+				aggregates.put(op.getPainId(), r);
+			}
+			r.addOpinion(op);
+		}
+
+		for (AggregateResult ar : aggregates.values())
+			ar.calculateTotal();
+
+		List<AggregateResult> results = new ArrayList<AggregateResult>(aggregates.values());
+		Collections.sort(results, AggregateResult.AverageDescendingComparator);
+		return results;
+	}
 }

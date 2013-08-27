@@ -62,7 +62,7 @@ public class JayaService extends Service<JayaConfiguration> {
 
 		env.addResource(new AccessResource(userDAO, httpClient, config.getGoogleConfiguration()));
 		env.addResource(new PainsResource(painCommentDAO, opinionDAO, customerDAO, painDAO));
-		env.addResource(new CustomersResource(customerDAO, customerCommentDAO, opinionDAO));
+		env.addResource(new CustomersResource(customerDAO, customerCommentDAO, opinionDAO, painDAO));
 		env.addResource(new OpinionsResource(opinionDAO));
 		env.addResource(new MyApiListingResourceJSON());
 		env.addResource(new UnlinkedIssuesResource(httpClient, config.getJiraConfiguration()));
